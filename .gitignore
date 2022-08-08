@@ -20,6 +20,7 @@ out
 *.releaseBackup
 release.properties
 local.properties
+hikari.properties
 *.swp
 
 .video
