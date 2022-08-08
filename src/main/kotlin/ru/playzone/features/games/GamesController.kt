@@ -18,7 +18,11 @@ class GamesController(private val call: ApplicationCall) {
         val token = call.request.headers["Bearer-Authorization"]
 
         if (TokenCheck.isTokenValid(token.orEmpty()) || TokenCheck.isTokenAdmin(token.orEmpty())) {
-            call.respond(Games.fetchAll().filter { it.title.contains(request.searchQuery, ignoreCase = true) })
+            if (request.searchQuery.isBlank()) {
+                call.respond(Games.fetchAll())
+            } else {
+                call.respond(Games.fetchAll().filter { it.title.contains(request.searchQuery, ignoreCase = true) })
+            }
         } else {
             call.respond(HttpStatusCode.Unauthorized, "Token expired")
         }
