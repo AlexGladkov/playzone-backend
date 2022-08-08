@@ -5,8 +5,8 @@ val exposed_version: String by project
 
 plugins {
     application
-    kotlin("jvm") version "1.6.21"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.6.21"
+    kotlin("jvm") version "1.6.10"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.6.10"
 }
 
 group = "ru.playzone"
@@ -31,7 +31,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
 
-    runtimeOnly("org.postgresql:postgresql:42.3.6")
+    implementation("org.postgresql:postgresql:42.2.2")
     implementation("com.zaxxer:HikariCP:5.0.1")
 
     implementation("ch.qos.logback:logback-classic:$logback_version")
