@@ -17,7 +17,7 @@ fun main() {
     val dataSource = HikariDataSource(config)
     Database.connect(dataSource)
 
-    embeddedServer(Netty, port = System.getenv("PORT").toInt()) {
+    embeddedServer(Netty, port = 8080) {
         configureRouting()
         configureLoginRouting()
         configureRegisterRouting()
