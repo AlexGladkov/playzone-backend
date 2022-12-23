@@ -7,12 +7,19 @@ plugins {
     application
     kotlin("jvm") version "1.6.10"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.6.10"
+    id("io.ktor.plugin") version "2.2.1"
 }
 
 group = "ru.playzone"
 version = "0.0.1"
 application {
     mainClass.set("ru.playzone.ApplicationKt")
+}
+
+ktor {
+    fatJar {
+        archiveFileName.set("fat.jar")
+    }
 }
 
 repositories {
@@ -31,7 +38,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
 
-    implementation("org.postgresql:postgresql:42.2.2")
+    implementation("org.postgresql:postgresql:42.5.1")
     implementation("com.zaxxer:HikariCP:5.0.1")
 
     implementation("ch.qos.logback:logback-classic:$logback_version")
