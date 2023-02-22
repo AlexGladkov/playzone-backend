@@ -1,27 +1,34 @@
 package ru.playzone
 
-import com.zaxxer.hikari.HikariConfig
-import com.zaxxer.hikari.HikariDataSource
+import io.ktor.server.application.*
 import io.ktor.server.engine.*
-import io.ktor.server.cio.*
 import io.ktor.server.netty.*
 import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.DatabaseConfig
 import ru.playzone.features.games.configureGameRouting
 import ru.playzone.features.login.configureLoginRouting
 import ru.playzone.features.register.configureRegisterRouting
-import ru.playzone.plugins.*
+import ru.playzone.plugins.configureRouting
+import ru.playzone.plugins.configureSerialization
 
 fun main() {
-    val config = HikariConfig("hikari.properties")
-    val dataSource = HikariDataSource(config)
-    Database.connect(dataSource)
+    Database.connect(
+        url = System.getenv("DATABASE_CONNECTION_STRING"),
+        driver = "org.postgresql.Driver",
+        user = System.getenv("POSTGRES_USER"),
+        password = System.getenv("POSTGRES_PASSWORD")
+    )
 
-    embeddedServer(Netty, port = 8080) {
-        configureRouting()
-        configureLoginRouting()
-        configureRegisterRouting()
-        configureGameRouting()
-        configureSerialization()
-    }.start(wait = true)
+    embeddedServer(
+        Netty,
+        port = System.getenv("SERVER_PORT").toInt(),
+        module = Application::playzoneModule
+    ).start(wait = true)
+}
+
+fun Application.playzoneModule() {
+    configureRouting()
+    configureLoginRouting()
+    configureRegisterRouting()
+    configureGameRouting()
+    configureSerialization()
 }
