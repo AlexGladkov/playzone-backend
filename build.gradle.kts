@@ -1,22 +1,32 @@
-val ktor_version: String by project
-val kotlin_version: String by project
-val logback_version: String by project
-val exposed_version: String by project
+import io.ktor.plugin.features.*
 
 plugins {
     application
-    kotlin("jvm") version "1.6.10"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.6.10"
-    id("io.ktor.plugin") version "2.2.1"
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.serialization)
+    id("io.ktor.plugin") version "2.3.8"
 }
 
 group = "ru.playzone"
 version = "0.0.1"
+
 application {
     mainClass.set("ru.playzone.ApplicationKt")
 }
 
 ktor {
+    docker {
+        jreVersion.set(JavaVersion.VERSION_21)
+        localImageName.set("playzone-docker-image")
+        imageTag.set("0.0.1-preview")
+
+        portMappings.set(
+            listOf(
+                DockerPortMapping(outsideDocker = 80, insideDocker = 8080, DockerPortMappingProtocol.TCP)
+            )
+        )
+    }
+
     fatJar {
         archiveFileName.set("fat.jar")
     }
@@ -28,22 +38,22 @@ repositories {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-server-core:$ktor_version")
-    implementation("io.ktor:ktor-server-content-negotiation:$ktor_version")
-    implementation("io.ktor:ktor-server-cio:$ktor_version")
-    implementation("io.ktor:ktor-server-netty:$ktor_version")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.cio)
+    implementation(libs.ktor.server.content)
+    implementation(libs.ktor.server.kotlinx)
+    implementation(libs.ktor.server.netty)
 
-    implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
-    implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
-    implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
+    implementation(libs.exposed.core)
+    implementation(libs.exposed.dao)
+    implementation(libs.exposed.jdbc)
 
-    implementation("org.postgresql:postgresql:42.5.1")
-    implementation("com.zaxxer:HikariCP:5.0.1")
+    implementation(libs.postgress)
+    implementation(libs.hikari)
 
-    implementation("ch.qos.logback:logback-classic:$logback_version")
-    testImplementation("io.ktor:ktor-server-tests:$ktor_version")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    implementation(libs.logback)
+    testImplementation(libs.ktor.server.tests)
+    testImplementation(libs.kotlin.tests)
 }
 
 tasks.create("stage") {
